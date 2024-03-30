@@ -24,7 +24,7 @@ class Point:
         return self > other or self == other
 
     def __add__(self, other):
-        if other is Point:
+        if type(other) is Point:
             assert self.function is other.function, "Points have different functions"
             assert len(self.coordinates) == len(other.coordinates), "Points have different dimensions"
             new_coords = tuple(self.coordinates[i] + other.coordinates[i] for i in range(len(self.coordinates)))
@@ -33,13 +33,13 @@ class Point:
             raise Exception("Wrong type passed")
 
     def __mul__(self, other):
-        if other is float or other is int:
+        if type(other) is float or type(other) is int:
             return Point(tuple(i * other for i in self.coordinates), self.function)
         else:
             raise Exception("Wrong type passed")
 
     def __sub__(self, other):
-        if other is Point:
+        if type(other) is Point:
             assert self.function is other.function, "Points have different functions"
             assert len(self.coordinates) == len(other.coordinates), "Points have different dimensions"
             new_coords = tuple(self.coordinates[i] - other.coordinates[i] for i in range(len(self.coordinates)))
@@ -48,14 +48,14 @@ class Point:
             raise Exception("Wrong type passed")
 
     def __truediv__(self, other):
-        if other is float:
+        if type(other) is float or type(other) is int:
             new_coords = tuple(self.coordinates[i] / other for i in range(len(self.coordinates)))
             return Point(coordinates=new_coords, function=self.function)
         else:
-            raise Exception("Wrong type passed")
+            raise Exception(f"Wrong type passed: {type(other)}")
 
     def len_calc(self, other):
-        if other is Point:
+        if type(other) is Point:
             assert self.function is other.function, "Points have different functions"
             assert len(self.coordinates) == len(other.coordinates), "Points have different dimensions"
             result = 0
@@ -66,11 +66,15 @@ class Point:
             raise Exception("Wrong type passed")
 
 
-def test_func(x, y):
-    return x + y
+def function(x, y):
+    return x ** 2 + x * y + y ** 2 - 6 * x - 9 * y
 
 
 if __name__ == '__main__':
-    a = Point((1, 2), test_func)
-    b = Point((3, 4), test_func)
-    print((a + b).coordinates)
+    b = Point((0, 1), function)
+    g = Point((1, 0), function)
+    w = Point((0, 0), function)
+    mid = (b + g) / 2
+    xr = mid * 2 - w
+    xe = xr * 2 - mid
+    print(xe.coordinates)
